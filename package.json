@@ -1,7 +1,7 @@
 {
     "name": "discord-stonk-bot",
     "version": "1.0.0",
-    "description": "Bot for returning stock information",
+    "description": "Bot for returning stock information to discord server",
     "main": "bot.js",
     "author": "Toby Prafke",
     "dependencies": {}
