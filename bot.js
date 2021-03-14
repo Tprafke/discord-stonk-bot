@@ -7,11 +7,11 @@ const client = new Discord.Client();
 
 const getPrice = async function (ticker) {
     // Runs getCurrentPrice function - Returns stock price from yahoo finance
-    const stockPrice = await yahooStockPrices.getCurrentPrice(ticker).catch(e => { console.log(e) });
+    let stockPrice = await yahooStockPrices.getCurrentPrice(ticker).catch(e => { console.log(e) });
     // Checks if a valid response has been recieved
     if (stockPrice === undefined) {
-        let response = "Invalid Entry";
-        return response; 
+        stockPrice = "Invalid Entry";
+        return stockPrice; 
     } else {
         stockPrice = `$${stockPrice}`;
         return stockPrice;
