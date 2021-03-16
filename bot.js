@@ -28,6 +28,13 @@ client.on("message", msg => {
     if (msg.content === "Thank you Stonk Bot") {
         msg.reply("You're welcome");
     }
+    if (msg.content === "!stonks") {
+        msg.channel.send({
+            files: [
+                "./images/stonks.jpeg"
+            ]
+        });
+    }
     if (msg.content === "Hello Stonk Bot") {
         msg.reply("Hello")
     }
