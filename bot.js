@@ -35,6 +35,12 @@ client.on("message", msg => {
             ]
         });
     }
+    if (msg.content === "!HODL" || msg.content === "!hodl") {
+        msg.channel.send("Apes Together Strong!");
+    }
+    if (msg.content === "!GME" || msg.content === "!gme" || msg.content === "!AMC" || msg.content === "!amc" ) {
+        msg.channel.send("We like the Stock!");
+    }
     if (msg.content === "Hello Stonk Bot") {
         msg.reply("Hello")
     }
