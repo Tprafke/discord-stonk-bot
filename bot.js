@@ -6,8 +6,13 @@ const yahooStockPrices = require('yahoo-stock-prices');
 const client = new Discord.Client();
 
 const getPrice = async function (ticker) {
-    // Runs getCurrentPrice function - Returns stock price from yahoo finance
+    
     let response;
+
+    // Format Ticker for API call
+    ticker = ticker.slice(1);
+    ticker = ticker.toUpperCase();
+    // Runs getCurrentPrice function - Returns stock price from yahoo finance
     let stockPrice = await yahooStockPrices.getCurrentPrice(ticker).catch(e => { console.log(e) });
     // Checks if a valid response has been recieved
     if (stockPrice === undefined) {
@@ -15,7 +20,7 @@ const getPrice = async function (ticker) {
         return response; 
     } else {
         response = { price: `$${stockPrice}`, stockPage: `https://finance.yahoo.com/quote/${ticker}?p=${ticker}&.tsrc=fin-srch`};
-        response = `Price: ${response.price}\nMore Info: ${response.stockPage}`
+        response = `Ticker: ${ticker}\nLast Price: ${response.price}\nMore Info: ${response.stockPage}`
         return response;
     }
     
@@ -50,8 +55,6 @@ client.on("message", msg => {
     // Formats string for yahoo finance request and returns ticker price
     if (msg.content.includes("$") && msg.content.length <= 5) {
         let string = msg.content;
-        string = string.slice(1);
-        string = string.toUpperCase();
         getPrice(string).then(response => msg.channel.send(response));
     }
 });
