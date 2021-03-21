@@ -19,18 +19,18 @@ const getPrice = async function (ticker) {
     if (ticker.length <= 5) {
         // Checks if request was for a crypto price
         if (ticker === "BTC" || ticker === "ETH" || ticker === "LTC") {
-        let cryptoResponse = await cryptoPrice.getCryptoPrice("USD", ticker).catch(err => {
-            console.log(err)
-        })
+            let cryptoResponse = await cryptoPrice.getCryptoPrice("USD", ticker).catch(e => {
+            console.log(e)
+        });
             if (cryptoResponse) {
-            // Formats response with ticker symbol, Last Price
-            response = `Ticker: ${ticker}\nLast Price: $${cryptoResponse.price}`
-            return response; 
-         } else if (cryptoResponse === undefined) {
-            response = "Invalid Entry";
-            return response; 
+                // Formats response with ticker symbol, Last Price
+                response = `Ticker: ${ticker}\nLast Price: $${cryptoResponse.price}`
+                return response; 
+            } else if (cryptoResponse === undefined) {
+                response = "Invalid Entry";
+                return response; 
+            }
         }
-    }
 
         // If request was not a crypto price, a stock price is requested
         else {
@@ -38,17 +38,17 @@ const getPrice = async function (ticker) {
             let stockPrice = await yahooStockPrices.getCurrentPrice(ticker).catch(e => { console.log(e) });
             // Checks if a valid response has been recieved, returns 'Invalid Entry' if undefined
             if (stockPrice) {
-            // Formats Yahoo Finance url string for response
-            let yahooFinancePage = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}&.tsrc=fin-srch`;
-            // Formats response with ticker symbol, Last Price, and Yahoo Finance URL
-            response = `Ticker: ${ticker}\nLast Price: $${stockPrice}\nMore Info: ${yahooFinancePage}`
-            return response; 
+                // Formats Yahoo Finance url string for response
+                let yahooFinancePage = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}&.tsrc=fin-srch`;
+                // Formats response with ticker symbol, Last Price, and Yahoo Finance URL
+                response = `Ticker: ${ticker}\nLast Price: $${stockPrice}\nMore Info: ${yahooFinancePage}`
+                return response; 
             } else if (stockPrice === undefined) {
                 response = "Invalid Entry";
                 return response; 
-                }
+            }
+        }
     }
-}
     else {
         response = "Invalid Entry";
         return response; 
