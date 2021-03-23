@@ -18,7 +18,7 @@ const getPrice = async function (ticker) {
     // Checks if request exceeds 5 character limit, returns 'Invalid Entry' if greater than 5
     if (ticker.length <= 5) {
         // Checks if request was for a crypto price
-        if (ticker === "BTC" || ticker === "ETH" || ticker === "LTC") {
+        if (ticker === "BTC" || ticker === "ETH" || ticker === "LTC" || ticker === "GRT" || ticker === "DOT" || ticker === "UNI" || ticker === "LINK") {
             let cryptoResponse = await cryptoPrice.getCryptoPrice("USD", ticker).catch(e => {
             console.log(e)
         });
