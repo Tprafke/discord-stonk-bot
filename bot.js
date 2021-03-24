@@ -60,7 +60,7 @@ const getCryptoPrice = async function (symbol) {
     }
 }
 
-
+// Declare command prefix
 const prefix = '$';
 
 client.on("ready", () => {
