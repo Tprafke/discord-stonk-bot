@@ -7,53 +7,61 @@ const cryptoPrice = require('crypto-price');
 
 const client = new Discord.Client();
 
-// getPrice function makes a request to Yahoo Finance and formats a response
+// getPrice function makes a stock price request to Yahoo Finance and formats a response
 const getPrice = async function (ticker) {
     let response;
 
     // Format Ticker for API call
-    ticker = ticker.slice(1);
     ticker = ticker.toUpperCase();
 
     // Checks if request exceeds 5 character limit, returns 'Invalid Entry' if greater than 5
     if (ticker.length <= 5) {
-        // Checks if request was for a crypto price
-        if (ticker === "BTC" || ticker === "ETH" || ticker === "LTC" || ticker === "GRT" || ticker === "DOT" || ticker === "UNI" || ticker === "LINK") {
-            let cryptoResponse = await cryptoPrice.getCryptoPrice("USD", ticker).catch(e => {
-            console.log(e)
-        });
-            if (cryptoResponse) {
-                // Formats response with ticker symbol, Last Price
-                response = `Ticker: ${ticker}\nLast Price: $${cryptoResponse.price}`
-                return response; 
-            } else if (cryptoResponse === undefined) {
-                response = "Invalid Entry";
-                return response; 
-            }
+        // Runs getCurrentPrice function - Returns stock price from yahoo finance
+        let stockPrice = await yahooStockPrices.getCurrentPrice(ticker).catch(e => { console.log(e) });
+        // Checks if a valid response has been recieved, returns 'Invalid Entry' if undefined
+        if (stockPrice) {
+            // Formats Yahoo Finance url string for response
+            let yahooFinancePage = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}&.tsrc=fin-srch`;
+            // Formats response with ticker symbol, Last Price, and Yahoo Finance URL
+            response = `Ticker: ${ticker}\nLast Price: $${stockPrice}\nMore Info: ${yahooFinancePage}`
+            return response; 
+        } else if (stockPrice === undefined) {
+            response = "Invalid Entry";
+            return response; 
         }
-
-        // If request was not a crypto price, a stock price is requested
-        else {
-            // Runs getCurrentPrice function - Returns stock price from yahoo finance
-            let stockPrice = await yahooStockPrices.getCurrentPrice(ticker).catch(e => { console.log(e) });
-            // Checks if a valid response has been recieved, returns 'Invalid Entry' if undefined
-            if (stockPrice) {
-                // Formats Yahoo Finance url string for response
-                let yahooFinancePage = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}&.tsrc=fin-srch`;
-                // Formats response with ticker symbol, Last Price, and Yahoo Finance URL
-                response = `Ticker: ${ticker}\nLast Price: $${stockPrice}\nMore Info: ${yahooFinancePage}`
-                return response; 
-            } else if (stockPrice === undefined) {
-                response = "Invalid Entry";
-                return response; 
-            }
-        }
-    }
-    else {
+    } else {
         response = "Invalid Entry";
         return response; 
     }
 }
+
+// Makes a crypto price request and returns a response
+const getCryptoPrice = async function (symbol) {
+    let response;
+
+    // Format Symbol for API call
+    symbol = symbol.toUpperCase();
+    
+    if (symbol.length <= 5) {
+        let cryptoResponse = await cryptoPrice.getCryptoPrice("USD", symbol).catch(e => {
+            console.log(e)
+        });
+        if (cryptoResponse) {
+            // Formats response with ticker symbol, Last Price
+            response = `Symbol: ${symbol}\nLast Price: $${cryptoResponse.price}`
+            return response; 
+        } else if (cryptoResponse === undefined) {
+            response = "Invalid Entry";
+            return response; 
+        }
+    } else {
+        response = "Invalid Entry";
+        return response; 
+    }
+}
+
+
+const prefix = '$';
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -61,29 +69,33 @@ client.on("ready", () => {
 // Checks discord client for new messages
 client.on("message", msg => {
     // Checks if message is from a bot 
-    if (msg.author.bot) return
-    if (msg.content === "Hello Stonk Bot") {
-        msg.reply("Hello")
-    }
-    if (msg.content === "Thank you Stonk Bot") {
-        msg.reply("You're welcome");
-    }
-    if (msg.content === "!stonks" || msg.content === "!STONKS") {
-        msg.channel.send({
-            files: [
-                "./images/stonks.jpeg"
-            ]
-        });
-    }
-    if (msg.content === "!HODL" || msg.content === "!hodl") {
-        msg.channel.send("Apes Together Strong!");
-    }
-    if (msg.content === "!GME" || msg.content === "!gme" || msg.content === "!AMC" || msg.content === "!amc" ) {
-        msg.channel.send("We like the Stock!");
-    }
-    // Checks if message requested stock price and runs getPrice function - sends response to client
-    if (msg.content.includes("$") && msg.content.length <= 10) {
-        getPrice(msg.content).then(response => msg.channel.send(response));
+    if (!msg.content.startsWith(prefix)|| msg.author.bot) return;
+    // Splits user commands including the prefix into arguments
+    const args = msg.content.slice(prefix.length).split(/ +/);
+    // Switch statement to check for user commands, takes two arguments
+    // args[0] is the first word following the prefix - arg[1] is the second word
+    switch(args[0]) {
+        case 'ping':
+            msg.channel.send('pong!')
+            break;
+        case 'stock':
+            if (!args[1]) return msg.channel.send("Error - Please enter second argument.");
+            getPrice(args[1]).then(response => msg.channel.send(response));
+            break;
+        case 'crypto':
+            if (!args[1]) return msg.channel.send("Error - Please enter second argument.");
+            getCryptoPrice(args[1]).then(response => msg.channel.send(response));
+            break;
+        case 'stonk':
+            msg.channel.send({
+                files: [
+                    "./images/stonks.jpeg"
+                ]
+            });
+            break;
+        case 'help':
+            msg.channel.send('Commands:\n$stock (ticker) - Requests stock price\n$crypto (symbol) - Request crypto price');
+            break;
     }
 });
 
