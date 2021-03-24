@@ -1,7 +1,5 @@
-const myToken = require('./config.js');
-const token = myToken.token;
-
 const Discord = require("discord.js");
+require('dotenv').config();
 const yahooStockPrices = require('yahoo-stock-prices');
 const cryptoPrice = require('crypto-price');
 
@@ -68,10 +66,12 @@ client.on("ready", () => {
 });
 // Checks discord client for new messages
 client.on("message", msg => {
-    // Checks if message is from a bot 
+    // Checks if message is from a bot or starts with command prefix 
     if (!msg.content.startsWith(prefix)|| msg.author.bot) return;
-    // Splits user commands including the prefix into arguments
+    // Splits message with prefix into seperate arguments
     const args = msg.content.slice(prefix.length).split(/ +/);
+    // Formats args into command
+    // const cmd = args.shift().toLowerCase();
     // Switch statement to check for user commands, takes two arguments
     // args[0] is the first word following the prefix - arg[1] is the second word
     switch(args[0]) {
@@ -99,4 +99,4 @@ client.on("message", msg => {
     }
 });
 
-client.login(token)
+client.login(process.env.DISCORD_TOKEN)
