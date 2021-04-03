@@ -21,7 +21,7 @@ const getPrice = async function (ticker) {
             // Formats Yahoo Finance url string for response
             let yahooFinancePage = `https://finance.yahoo.com/quote/${ticker}?p=${ticker}&.tsrc=fin-srch`;
             // Formats response with ticker symbol, Last Price, and Yahoo Finance URL
-            response = `Ticker: ${ticker}\nLast Price: $${stockPrice}\nMore Info: ${yahooFinancePage}`
+            response = `Ticker: ${ticker}\nLast Price: $${stockPrice}\nMore Info: ${yahooFinancePage}`;
             return response; 
         } else if (stockPrice === undefined) {
             response = "Invalid Entry";
@@ -45,8 +45,11 @@ const getCryptoPrice = async function (symbol) {
             console.log(e)
         });
         if (cryptoResponse) {
+            // Formats Coinbase URL string for response
+            // Doesn't take symbol in query string - needs full crypto name
+            let coinbasePage = `https://www.coinbase.com/price/${symbol}`;
             // Formats response with ticker symbol, Last Price
-            response = `Symbol: ${symbol}\nLast Price: $${cryptoResponse.price}`
+            response = `Symbol: ${symbol}\nLast Price: $${cryptoResponse.price}\nMore Info: ${coinbasePage}`;
             return response; 
         } else if (cryptoResponse === undefined) {
             response = "Invalid Entry";
@@ -74,28 +77,27 @@ client.on("message", msg => {
     // const cmd = args.shift().toLowerCase();
     // Switch statement to check for user commands, takes two arguments
     // args[0] is the first word following the prefix - arg[1] is the second word
-    switch(args[0]) {
-        case 'ping':
+
+    if (args[0]) {
+        if (args[0] === 'ping') {
             msg.channel.send('pong!')
-            break;
-        case 'stock':
+        } else if (args[0] === 'stock'){
             if (!args[1]) return msg.channel.send("Error - Please enter second argument.");
             getPrice(args[1]).then(response => msg.channel.send(response));
-            break;
-        case 'crypto':
+        } else if (args[0] ==='crypto') {
             if (!args[1]) return msg.channel.send("Error - Please enter second argument.");
             getCryptoPrice(args[1]).then(response => msg.channel.send(response));
-            break;
-        case 'stonk':
+        } else if (args[0] === 'stonks') {
             msg.channel.send({
                 files: [
                     "./images/stonks.jpeg"
                 ]
             });
-            break;
-        case 'help':
-            msg.channel.send('Commands:\n$stock (ticker) - Requests stock price\n$crypto (symbol) - Request crypto price');
-            break;
+        } else if  (args[0] === 'help') {
+            msg.channel.send('Commands:\n$stock (ticker) - Requests stock price\n$crypto (symbol) - Request crypto price\n$stonks - meme');
+        } else {
+            msg.channel.send('Error - Please enter a valid argument.');
+        }
     }
 });
 
