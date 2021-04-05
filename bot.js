@@ -75,9 +75,9 @@ client.on("message", msg => {
     const args = msg.content.slice(prefix.length).split(/ +/);
     // Formats args into command
     // const cmd = args.shift().toLowerCase();
-    // Switch statement to check for user commands, takes two arguments
-    // args[0] is the first word following the prefix - arg[1] is the second word
 
+    // Checks user input for a valid command, takes two arguments
+    // args[0] is the first word following the prefix - arg[1] is the second word
     if (args[0]) {
         if (args[0] === 'ping') {
             msg.channel.send('pong!')
@@ -95,7 +95,10 @@ client.on("message", msg => {
             });
         } else if  (args[0] === 'help') {
             msg.channel.send('Commands:\n$stock (ticker) - Requests stock price\n$crypto (symbol) - Request crypto price\n$stonks - meme');
-        } else {
+        } else if (args[0] === 'info') {
+            msg.channel.send('Github: https://github.com/Tprafke/discord-stonk-bot')
+        }
+        else {
             msg.channel.send('Error - Please enter a valid argument.');
         }
     }
