@@ -73,33 +73,33 @@ client.on("message", msg => {
     if (!msg.content.startsWith(prefix)|| msg.author.bot) return;
     // Splits message with prefix into seperate arguments
     const args = msg.content.slice(prefix.length).split(/ +/);
-    // Formats args into command
-    // const cmd = args.shift().toLowerCase();
+    
+    // Formats arg[0] into command
+    const cmd = args.shift().toLowerCase();
 
-    // Checks user input for a valid command, takes two arguments
-    // args[0] is the first word following the prefix - arg[1] is the second word
-    if (args[0]) {
-        if (args[0] === 'ping') {
+    // Checks whether user has entered a valid command
+    if (cmd) {
+        if (cmd === 'ping') {
             msg.channel.send('pong!')
-        } else if (args[0] === 'stock'){
-            if (!args[1]) return msg.channel.send("Error - Please enter second argument.");
-            getPrice(args[1]).then(response => msg.channel.send(response));
-        } else if (args[0] ==='crypto') {
-            if (!args[1]) return msg.channel.send("Error - Please enter second argument.");
-            getCryptoPrice(args[1]).then(response => msg.channel.send(response));
-        } else if (args[0] === 'stonks') {
+        } else if (cmd === 'stock'){
+            if (!args[0]) return msg.channel.send("Error - Please enter second argument.");
+            getPrice(args[0]).then(response => msg.channel.send(response));
+        } else if (cmd ==='crypto') {
+            if (!args[0]) return msg.channel.send("Error - Please enter second argument.");
+            getCryptoPrice(args[0]).then(response => msg.channel.send(response));
+        } else if (cmd === 'stonks') {
             msg.channel.send({
                 files: [
                     "./images/stonks.jpeg"
                 ]
             });
-        } else if  (args[0] === 'help') {
+        } else if  (cmd === 'help') {
             msg.channel.send('Commands:\n$stock (ticker) - Requests stock price\n$crypto (symbol) - Request crypto price\n$stonks - meme');
-        } else if (args[0] === 'info') {
+        } else if (cmd === 'info') {
             msg.channel.send('Github: https://github.com/Tprafke/discord-stonk-bot')
         }
         else {
-            msg.channel.send('Error - Please enter a valid argument.');
+            msg.channel.send('Error - Please enter a valid command.');
         }
     }
 });
