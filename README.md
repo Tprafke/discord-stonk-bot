@@ -4,7 +4,7 @@
 
 ## Description
 
-Discord Stonk Bot is a discord bot that allows server members to make easy stock and crypto price request that appear in the channel. Stock price request are made using the Yahoo Finance API.
+A discord bot built using JavaScript that allows server members to make easy stock and cryptocurrency price request that appear in the channel. Stock price requests are made using the Yahoo Finance API, cryptocurrency price requests are made using the crypto-price npm package.
 
 ## Languages & Technologies
 
